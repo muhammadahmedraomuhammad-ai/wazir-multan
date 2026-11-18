@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>وزیرِ ملتانی - لائیو ڈلیوری سسٹم</title>
+<!-- Google Search Console Verification Tag -->
+<meta name="google-site-verification" content="iLsOZZysCKsRwdrjdVEBcDkcDTQRyLX5zBRhhTNGqN4" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;700&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -32,7 +34,7 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
 
 <div style="background:var(--g900);color:#fff;padding:8px 16px;font-size:14px;display:flex;justify-content:space-between;align-items:center;">
     <span><i class="fa-solid fa-location-dot" style="color:var(--gold)"></i> ملتان (سبزی و غلہ منڈی زون)</span>
-    <span style="color:#F3D88B;cursor:pointer;" onclick="switchToRiderMode()">رائڈر پورٹل (Driver Mode)</span>
+    <span style="color:#F3D88B;cursor:pointer;" onclick="switchToRiderMode()">رائیڈر پورٹل (Driver Mode)</span>
 </div>
 
 <div class="wrap">
@@ -147,7 +149,6 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
     let myOrderKey = localStorage.getItem('waz_my_order_key') || null;
     let adminPin = localStorage.getItem('waz_admin_pin') || '786';
 
-    // Check if URL has admin mode (e.g. yoursite.html?admin=true)
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         if(urlParams.get('admin') === 'true') {
@@ -353,7 +354,7 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
                     <div class="order-card">
                         <p><b>پتہ:</b> ${o.address}</p>
                         <p><b>تفصیل:</b> ${o.items}</p>
-                        <p><b>کرایه:</b> PKR ${o.fare}</p>
+                        <p><b>کرایہ:</b> PKR ${o.fare}</p>
                         <button onclick="acceptOrder('${key}')" class="btn" style="margin-top:10px;background:var(--g700);">یہ آرڈر قبول کریں (Accept)</button>
                     </div>
                 `;
