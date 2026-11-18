@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>وزیرِ ملتانی - ان ڈرائیو طرز لائیو ڈلیوری سسٹم</title>
+<title>وزیرِ ملتانی - لائیو ڈلیوری سسٹم</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;700&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -24,19 +24,15 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
 .fare-display{font-size:30px;font-weight:700;color:var(--gold)}
 .order-card{background:#f9f9f9;border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px}
 .badge{background:var(--gold);color:#000;font-size:12px;font-weight:700;padding:2px 10px;border-radius:99px}
-/* Hidden Admin Trigger */
-.hidden-admin-link{position:fixed;bottom:10px;left:10px;opacity:0.05;font-size:12px;z-index:9999;}
-.hidden-admin-link:hover{opacity:1;}
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
-<!-- Topbar & Header -->
 <div style="background:var(--g900);color:#fff;padding:8px 16px;font-size:14px;display:flex;justify-content:space-between;align-items:center;">
     <span><i class="fa-solid fa-location-dot" style="color:var(--gold)"></i> ملتان (سبزی و غلہ منڈی زون)</span>
-    <span id="topbar-mode" style="color:#F3D88B;cursor:pointer;" onclick="switchToRiderMode()">رائڈر موڈ (Driver Mode)</span>
+    <span style="color:#F3D88B;cursor:pointer;" onclick="switchToRiderMode()">رائڈر پورٹل (Driver Mode)</span>
 </div>
 
 <div class="wrap">
@@ -49,21 +45,21 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
             <p style="font-size:14px;color:var(--mute);margin-bottom:14px;">اپنا نام، فون نمبر اور مرضی کا پن کوڈ درج کریں:</p>
             <div class="field"><label>نام</label><input type="text" id="c-name" placeholder="محمد علی"></div>
             <div class="field"><label>موبائل نمبر</label><input type="text" id="c-phone" placeholder="03056243881"></div>
-            <div class="field"><label>پن کوڈ (کوئی سا بھی ہندسہ)</label><input type="password" id="c-pin" placeholder="786"></div>
+            <div class="field"><label>پن کوڈ</label><input type="password" id="c-pin" placeholder="786"></div>
             <button onclick="registerCustomer()" class="btn" style="width:100%;">ہوم اسکرین کھولیں</button>
         </div>
 
         <div id="cust-main-card" class="card" style="max-width:600px;margin:0 auto;display:none;">
             <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px;">
                 <h3 id="cust-welcome-title">خوش آمدید</h3>
-                <button onclick="custLogout()" class="btn" style="min-height:36px;padding:0 12px;font-size:13px;background:#666;">لاگ آؤٹ</button>
+                <button onclick="custLogout()" class="btn" style="min-height:36px;padding:0 12px;font-size:13px;background:#666;">لاگ آؤت</button>
             </div>
             <div class="field"><label>ڈلیوری کا پتہ</label><input type="text" id="c-address" placeholder="DHA فیز 2 / گلشن بازار ملتان"></div>
             <div class="field"><label>سامان کی تفصیل</label><textarea id="c-items" placeholder="سبزی منڈی سے تازہ سبزیاں..."></textarea></div>
 
             <div class="bidding-box">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span>کرایہ آفر (ان ڈرائیو طرز)</span>
+                    <span>کرایہ آفر</span>
                     <span class="badge">مناسب کرایہ</span>
                 </div>
                 <div class="fare-control">
@@ -75,7 +71,6 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
 
             <button onclick="placeCustomerOrder()" class="btn" style="width:100%;margin-top:20px;background:var(--gold);color:#000;border-color:var(--gold);">آرڈر کریں</button>
 
-            <!-- Active Order Status for Customer -->
             <div id="cust-active-status-box" style="margin-top:25px;display:none;border-top:2px solid var(--line);padding-top:15px;">
                 <h4 style="color:var(--g800);">آپ کے آرڈر کا لائیو اسٹیٹس</h4>
                 <div id="cust-order-live-info" class="order-card"></div>
@@ -88,44 +83,58 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
         <div class="card" style="max-width:600px;margin:0 auto;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
                 <h3>رائیڈر پورٹل (Driver Mode)</h3>
-                <button onclick="switchToCustomerMode()" class="btn" style="min-height:36px;padding:0 12px;font-size:13px;">کسٹمر موڈ پر جائیں</button>
+                <button onclick="switchToCustomerMode()" class="btn" style="min-height:36px;padding:0 12px;font-size:13px;">کسٹمر موڈ</button>
             </div>
 
-            <div id="rider-reg-box">
-                <p style="font-size:14px;color:var(--mute);margin-bottom:14px;">رائیڈر رجسٹریشن فارم (ایڈمن کی منظوری کے لیے):</p>
+            <div id="rider-login-box">
+                <p style="font-size:14px;color:var(--mute);margin-bottom:14px;">اپنا فون نمبر اور دیگر تفصیلات درج کریں:</p>
                 <div class="field"><label>پورا نام</label><input type="text" id="r-name" placeholder="محمد بلال"></div>
                 <div class="field"><label>موبائل نمبر</label><input type="text" id="r-phone" placeholder="03009876543"></div>
-                <div class="field"><label>موٹرسائیکل کا نام / نمبر</label><input type="text" id="r-bike" placeholder="Honda CD 70 (MUL-789)"></div>
-                <div class="field"><label>شناختی کارڈ نمبر (CNIC)</label><input type="text" id="r-cnic" placeholder="36302-1234567-1"></div>
-                <button onclick="submitRiderRegistration()" class="btn" style="width:100%;">Approval for Admin (منظوری کے لیے بھیجیں)</button>
+                <div class="field"><label>موٹرسائیکل نام/نمبر</label><input type="text" id="r-bike" placeholder="Honda CD 70"></div>
+                <div class="field"><label>شناختی کارڈ (CNIC)</label><input type="text" id="r-cnic" placeholder="36302-1234567-1"></div>
+                <button onclick="checkOrRegisterRider()" class="btn" style="width:100%;">لاگ ان / اپروول چیک کریں</button>
             </div>
 
             <div id="rider-dashboard-box" style="display:none;margin-top:20px;">
+                <div id="rider-pending-msg" style="padding:15px;background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;color:#92400e;font-weight:700;display:none;">
+                    آپ کی رجسٹریشن فی الحال پینڈنگ (Pending) ہے۔ جب تک ایڈمن منظوری نہیں دیتا، آپ کو آرڈرز شو نہیں ہوں گے۔
+                </div>
                 <div id="rider-active-delivery" style="margin-bottom:20px;"></div>
-                <h4>دستیاب نئے آرڈرز (قبول کرنے کے لیے)</h4>
-                <div id="rider-pending-orders-list"></div>
+                <div id="rider-orders-area" style="display:none;">
+                    <h4>دستیاب نئے آرڈرز</h4>
+                    <div id="rider-pending-orders-list"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 3. ADMIN PANEL (Hidden) -->
+    <!-- 3. ADMIN PANEL -->
     <div id="section-admin" style="display:none;">
         <div class="card" style="max-width:700px;margin:0 auto;background:#0A3D27;color:#fff;">
-            <h3>ایڈمن کنٹرول پینل (مونیٹرنگ)</h3>
-            <p style="font-size:13px;color:#F3D88B;margin-bottom:15px;">یہاں تمام رجسٹرڈ رائڈرز اور لائیو آرڈرز کی مونیٹرنگ ہوتی ہے۔</p>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <h3>ایڈمن کنٹرول پینل (مونیٹرنگ)</h3>
+                <button onclick="switchToCustomerMode()" class="btn" style="background:#fff;color:#000;min-height:36px;padding:0 12px;font-size:13px;">باہر نکلیں</button>
+            </div>
+            <p style="font-size:13px;color:#F3D88B;margin:10px 0 15px 0;">یہاں سے رائڈرز کو Approve کریں اور نئے ایڈمنز کا اضافہ کریں۔</p>
             
+            <!-- Change Password & Add Admin Section -->
+            <div style="background:rgba(255,255,255,0.1);padding:15px;border-radius:12px;margin-bottom:20px;">
+                <h4 style="color:#F3D88B;margin-bottom:10px;">ایڈمن سیٹنگز</h4>
+                <div class="field"><label style="color:#fff;">نیا ایڈمن پن کوڈ درج کریں</label><input type="password" id="new-admin-pin" placeholder="نیا پن (مثلاً 9999)"></div>
+                <button onclick="changeAdminPassword()" class="btn" style="background:var(--gold);color:#000;min-height:40px;font-size:14px;margin-bottom:15px;">پن کوڈ تبدیل کریں</button>
+
+                <div class="field"><label style="color:#fff;">نیا ایڈمن ای میل یا فون نمبر درج کریں</label><input type="text" id="new-admin-email" placeholder="admin2@gmail.com یا 0300..."></div>
+                <button onclick="addNewAdmin()" class="btn" style="background:var(--gold);color:#000;min-height:40px;font-size:14px;">نیا ایڈمن شامل کریں</button>
+            </div>
+
             <h4 style="color:#F3D88B;border-bottom:1px solid rgba(255,255,255,0.2);padding-bottom:5px;">رائیڈر رجسٹریشن کی درخواستیں</h4>
-            <div id="admin-riders-list" style="margin-bottom:20px;">کوئی درخواست موجود نہیں۔</div>
+            <div id="admin-riders-list" style="margin-bottom:20px;">کوئی درخواست نہیں۔</div>
 
             <h4 style="color:#F3D88B;border-bottom:1px solid rgba(255,255,255,0.2);padding-bottom:5px;">تمام لائیو آرڈرز</h4>
-            <div id="admin-orders-list">کوئی آرڈر موجود نہیں۔</div>
-
-            <button onclick="switchToCustomerMode()" class="btn" style="margin-top:20px;background:#fff;color:#000;">باہر نکلیں</button>
+            <div id="admin-orders-list">کوئی آرڈر نہیں۔</div>
         </div>
     </div>
 </div>
-
-<a href="javascript:void(0)" class="hidden-admin-link" onclick="openAdminPanel()">Admin Login</a>
 
 <script>
     const firebaseConfig = {
@@ -136,6 +145,22 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
 
     let currentFare = 300;
     let myOrderKey = localStorage.getItem('waz_my_order_key') || null;
+    let adminPin = localStorage.getItem('waz_admin_pin') || '786';
+
+    // Check if URL has admin mode (e.g. yoursite.html?admin=true)
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('admin') === 'true') {
+            let pin = prompt("ایڈمن پن کوڈ درج کریں:");
+            if(pin === adminPin) {
+                document.getElementById('section-customer').style.display = 'none';
+                document.getElementById('section-rider').style.display = 'none';
+                document.getElementById('section-admin').style.display = 'block';
+            } else {
+                alert("غلط پن کوڈ!");
+            }
+        }
+    });
 
     function switchToRiderMode() {
         document.getElementById('section-customer').style.display = 'none';
@@ -149,25 +174,29 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
         document.getElementById('section-customer').style.display = 'block';
     }
 
-    function openAdminPanel() {
-        let pin = prompt("ایڈمن پن کوڈ درج کریں:");
-        if(pin === "786") {
-            document.getElementById('section-customer').style.display = 'none';
-            document.getElementById('section-rider').style.display = 'none';
-            document.getElementById('section-admin').style.display = 'block';
-        } else {
-            alert("غلط پن کوڈ!");
-        }
+    function changeAdminPassword() {
+        let newPin = document.getElementById('new-admin-pin').value;
+        if(!newPin) { alert("نیا پن درج کریں۔"); return; }
+        localStorage.setItem('waz_admin_pin', newPin);
+        adminPin = newPin;
+        alert("ایڈمن پن کوڈ کامیابی سے تبدیل ہو گیا ہے!");
+        document.getElementById('new-admin-pin').value = '';
+    }
+
+    function addNewAdmin() {
+        let val = document.getElementById('new-admin-email').value;
+        if(!val) { alert("ای میل یا فون نمبر درج کریں۔"); return; }
+        db.ref('admins').push({identifier: val, timestamp: Date.now()}).then(() => {
+            alert("نیا ایڈمن کامیابی سے شامل کر دیا گیا ہے!");
+            document.getElementById('new-admin-email').value = '';
+        });
     }
 
     function registerCustomer() {
         let name = document.getElementById('c-name').value;
         let phone = document.getElementById('c-phone').value;
         let pin = document.getElementById('c-pin').value;
-        if(!name || !phone || !pin) {
-            alert("براہ کرم تمام خانے پر کریں۔");
-            return;
-        }
+        if(!name || !phone || !pin) { alert("تمام خانے پر کریں۔"); return; }
         localStorage.setItem('waz_cust', JSON.stringify({name, phone}));
         document.getElementById('cust-auth-card').style.display = 'none';
         document.getElementById('cust-main-card').style.display = 'block';
@@ -194,10 +223,7 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
         let items = document.getElementById('c-items').value;
         let cust = JSON.parse(localStorage.getItem('waz_cust'));
 
-        if(!address || !items) {
-            alert("براہ کرم پتہ اور سامان کی تفصیل درج کریں۔");
-            return;
-        }
+        if(!address || !items) { alert("پتہ اور سامان درج کریں۔"); return; }
 
         let orderData = {
             customerName: cust.name,
@@ -215,7 +241,7 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
         ref.set(orderData).then(() => {
             myOrderKey = ref.key;
             localStorage.setItem('waz_my_order_key', myOrderKey);
-            alert("آپ کا آرڈر کامیابی سے لائیو بھیج دیا گیا ہے!");
+            alert("آرڈر لائیو بھیج دیا گیا ہے!");
             document.getElementById('c-address').value = '';
             document.getElementById('c-items').value = '';
             checkMyCustomerActiveOrder();
@@ -230,8 +256,8 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
             let info = document.getElementById('cust-order-live-info');
             if(order) {
                 box.style.display = 'block';
-                let statusText = order.status === "Pending" ? "رائڈر کے قبول کرنے کا انتظار..." : "رائڈر نے آرڈر قبول کر لیا ہے!";
-                let riderDetails = order.status === "Accepted" ? `<p style="color:#0A3D27;font-weight:700;margin-top:8px;">رائڈر نام اور نمبر: ${order.assignedRider}</p>` : '';
+                let statusText = order.status === "Pending" ? "رائڈر کے قبول کرنے کا انتظار..." : "رائڈر نے قبول کر لیا ہے!";
+                let riderDetails = order.status === "Accepted" ? `<p style="color:#0A3D27;font-weight:700;margin-top:8px;">رائڈر اور نمبر: ${order.assignedRider}</p>` : '';
                 info.innerHTML = `
                     <p><b>پتہ:</b> ${order.address}</p>
                     <p><b>سامان:</b> ${order.items}</p>
@@ -245,70 +271,89 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
         });
     }
 
-    function submitRiderRegistration() {
+    function checkOrRegisterRider() {
         let name = document.getElementById('r-name').value;
         let phone = document.getElementById('r-phone').value;
         let bike = document.getElementById('r-bike').value;
         let cnic = document.getElementById('r-cnic').value;
 
-        if(!name || !phone || !bike || !cnic) {
-            alert("براہ کرم تمام معلومات درج کریں۔");
-            return;
-        }
+        if(!name || !phone || !bike || !cnic) { alert("تمام معلومات درج کریں۔"); return; }
 
-        let riderData = {name, phone, bike, cnic, status: "Pending", timestamp: Date.now()};
-        db.ref('riders').push(riderData).then(() => {
-            alert("آپ کی رجسٹریشن کی درخواست ایڈمن کو بھیج دی گئی ہے!");
-            document.getElementById('rider-reg-box').style.display = 'none';
-            document.getElementById('rider-dashboard-box').style.display = 'block';
+        let riderId = phone.replace(/[^0-9]/g, '');
+        db.ref('riders/' + riderId).once('value', (snapshot) => {
+            if(snapshot.exists()) {
+                let r = snapshot.val();
+                document.getElementById('rider-login-box').style.display = 'none';
+                document.getElementById('rider-dashboard-box').style.display = 'block';
+                
+                if(r.status === "Approved") {
+                    document.getElementById('rider-pending-msg').style.display = 'none';
+                    document.getElementById('rider-orders-area').style.display = 'block';
+                } else {
+                    document.getElementById('rider-pending-msg').style.display = 'block';
+                    document.getElementById('rider-orders-area').style.display = 'none';
+                }
+            } else {
+                let riderData = {name, phone, bike, cnic, status: "Pending", timestamp: Date.now()};
+                db.ref('riders/' + riderId).set(riderData).then(() => {
+                    alert("رجسٹریشن کی درخواست ایڈمن کو بھیج دی گئی ہے!");
+                    document.getElementById('rider-login-box').style.display = 'none';
+                    document.getElementById('rider-dashboard-box').style.display = 'block';
+                    document.getElementById('rider-pending-msg').style.display = 'block';
+                    document.getElementById('rider-orders-area').style.display = 'none';
+                });
+            }
+        });
+    }
+
+    function adminApproveRider(riderKey) {
+        db.ref('riders/' + riderKey).update({status: "Approved"}).then(() => {
+            alert("رائڈر کو منظور (Approve) کر دیا گیا ہے!");
         });
     }
 
     function acceptOrder(orderKey) {
-        let rName = prompt("اپنا نام اور فون نمبر درج کریں (Accept کرنے کے لیے):");
-        if(!rName) return;
-
+        let rName = document.getElementById('r-name').value || "رائڈر";
+        let rPhone = document.getElementById('r-phone').value || "";
         db.ref('orders/' + orderKey).update({
             status: "Accepted",
-            assignedRider: rName,
-            riderPhone: rName
+            assignedRider: rName + " (" + rPhone + ")",
+            riderPhone: rPhone
         }).then(() => {
             alert("مبارک ہو! آرڈر آپ کو اسائن ہو گیا ہے۔");
         });
     }
 
-    // Real-time synchronization for Admin and Riders
     db.ref('orders').on('value', (snapshot) => {
         let adminOrders = document.getElementById('admin-orders-list');
         let riderPending = document.getElementById('rider-pending-orders-list');
+        if(!adminOrders || !riderPending) return;
         adminOrders.innerHTML = '';
         riderPending.innerHTML = '';
 
         let data = snapshot.val();
         if(!data) {
             adminOrders.innerHTML = '<p>کوئی آرڈر نہیں۔</p>';
-            riderPending.innerHTML = '<p>اس وقت کوئی نیا آرڈر موجود نہیں۔</p>';
+            riderPending.innerHTML = '<p>کوئی نیا آرڈر موجود نہیں۔</p>';
             return;
         }
 
         Object.keys(data).forEach(key => {
             let o = data[key];
-            // Admin View
             adminOrders.innerHTML += `
                 <div class="order-card" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);">
                     <p><b>گاہک:</b> ${o.customerName} (${o.customerPhone})</p>
                     <p><b>پتہ:</b> ${o.address} | <b>کرایہ:</b> PKR ${o.fare}</p>
-                    <p style="color:${o.status==='Pending'?'#f87171':'#4ade80'};">اسٹیٹس: ${o.status==='Pending'?'پینڈنگ':'رائڈر ('+o.assignedRider+') کے پاس ہے'}</p>
+                    <p style="color:${o.status==='Pending'?'#f87171':'#4ade80'};">اسٹیٹس: ${o.status==='Pending'?'پینڈنگ':'رائڈر ('+o.assignedRider+')'}</p>
                 </div>
             `;
 
-            // Rider Pending View
             if(o.status === "Pending") {
                 riderPending.innerHTML += `
                     <div class="order-card">
                         <p><b>پتہ:</b> ${o.address}</p>
                         <p><b>تفصیل:</b> ${o.items}</p>
-                        <p><b>کرایہ:</b> PKR ${o.fare}</p>
+                        <p><b>کرایه:</b> PKR ${o.fare}</p>
                         <button onclick="acceptOrder('${key}')" class="btn" style="margin-top:10px;background:var(--g700);">یہ آرڈر قبول کریں (Accept)</button>
                     </div>
                 `;
@@ -318,19 +363,22 @@ input,textarea{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA
 
     db.ref('riders').on('value', (snapshot) => {
         let adminRiders = document.getElementById('admin-riders-list');
+        if(!adminRiders) return;
         adminRiders.innerHTML = '';
         let data = snapshot.val();
         if(!data) {
-            adminRiders.innerHTML = '<p>کوئی نئی درخواست نہیں۔</p>';
+            adminRiders.innerHTML = '<p>کوئی درخواست نہیں۔</p>';
             return;
         }
         Object.keys(data).forEach(key => {
             let r = data[key];
+            let badgeColor = r.status === "Approved" ? "#16a34a" : "#d97706";
             adminRiders.innerHTML += `
                 <div class="order-card" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);">
                     <p><b>نام:</b> ${r.name} | <b>فون:</b> ${r.phone}</p>
                     <p><b>بائیک:</b> ${r.bike} | <b>شناختی کارڈ:</b> ${r.cnic}</p>
-                    <p style="color:#4ade80;">اسٹیٹس: منظوری کے منتظر</p>
+                    <p style="color:${badgeColor};font-weight:700;">اسٹیٹس: ${r.status}</p>
+                    ${r.status === 'Pending' ? `<button onclick="adminApproveRider('${key}')" class="btn" style="margin-top:8px;background:#16a34a;min-height:36px;font-size:14px;">منظور کریں (Approve)</button>` : ''}
                 </div>
             `;
         });
