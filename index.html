@@ -51,6 +51,9 @@ input[type=text],input[type=password],textarea,select{width:100%;min-height:48px
 footer{background:var(--g900);color:#fff;padding-block:25px;text-align:center;margin-top:40px}
 .nav-tabs{display:flex;gap:8px;flex-wrap:wrap;}
 </style>
+<!-- Firebase Realtime Database SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -63,8 +66,8 @@ footer{background:var(--g900);color:#fff;padding-block:25px;text-align:center;ma
 <header class="hdr"><div class="wrap">
 <a class="logo" href="#top"><i class="fa-solid fa-store" style="color:var(--gold)"></i>وزیرِ ملتانی</a>
 <div class="nav-tabs">
-    <button onclick="showTab('customer')" class="btn" style="min-height:38px; padding:0 14px; font-size:14px;">کسٹمر</button>
-    <button onclick="showTab('rider')" class="btn ghost" style="min-height:38px; padding:0 14px; font-size:14px;">رائیڈر ڈیش بورڈ</button>
+    <button onclick="showTab('customer')" class="btn" style="min-height:38px; padding:0 14px; font-size:14px;">کسٹمر پورٹل</button>
+    <button onclick="showTab('rider')" class="btn ghost" style="min-height:38px; padding:0 14px; font-size:14px;">رائیڈر پورٹل</button>
     <button onclick="showTab('admin')" class="btn ghost" style="min-height:38px; padding:0 14px; font-size:14px; background:#C9A24B; color:#000; border-color:#C9A24B;"><i class="fa-solid fa-lock" style="margin-inline-end:4px"></i>ایڈمن پینل</button>
 </div>
 </div></header>
@@ -72,7 +75,7 @@ footer{background:var(--g900);color:#fff;padding-block:25px;text-align:center;ma
 <section class="hero"><div class="wrap">
 <div style="max-width:700px;">
 <h1>ملتان کے بازار، آپ کی دہلیز پر</h1>
-<p>لائیو ڈلیوری اور رائیڈر اسائنمنٹ سسٹم: کون سا آرڈر کس رائڈر کو جا رہا ہے اس کی مکمل ٹریکنگ۔</p>
+<p>محفوظ اور الگ پورٹلز: کسٹمر صرف اپنا آرڈر اور قبول کرنے والے رائڈر کی تفصیل دیکھے گا، اور رائڈر صرف اویلیبل یا اپنا اٹھایا ہوا آرڈر دیکھے گا۔</p>
 </div>
 </div></section>
 
@@ -103,7 +106,7 @@ footer{background:var(--g900);color:#fff;padding-block:25px;text-align:center;ma
 <div id="cust-order-card" class="card" style="max-width:700px; margin:0 auto; display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:14px;">
         <h3 style="color:var(--g800);"><i class="fa-solid fa-cart-shopping" style="color:var(--gold)"></i> نیا آرڈر بک کریں</h3>
-        <button onclick="custLogout()" class="btn ghost" style="min-height:34px; padding:0 10px; font-size:13px;">لاگ آؤٹ</button>
+        <button onclick="custLogout()" class="btn ghost" style="min-height:34px; padding:0 10px; font-size:13px;">لاگ آؤت</button>
     </div>
     <div class="field">
         <label>ڈلیوری کا مکمل پتہ (ملتان زون)</label>
@@ -126,32 +129,36 @@ footer{background:var(--g900);color:#fff;padding-block:25px;text-align:center;ma
         </div>
     </div>
 
-    <button onclick="submitCustomerOrder()" class="btn" style="width:100%; margin-top:20px; background:var(--gold); color:#000; border-color:#C9A24B;">آرڈر لائیو بھیجیں</button>
+    <button onclick="submitCustomerOrder()" class="btn" style="width:100%; margin-top:20px; background:var(--gold); color:#000; border-color:#C9A24B;">آرڈر لائیو فائر بیس پر بھیجیں</button>
+
+    <!-- Customer's Active Order Tracking Box -->
+    <div id="customer-active-order-box" style="margin-top:25px; display:none; border-top:2px solid var(--line); padding-top:15px;">
+        <h4 style="color:var(--g800); margin-bottom:10px;"><i class="fa-solid fa-truck-fast"></i> آپ کے آرڈر کا لائیو اسٹیٹس اور رائڈر کی معلومات</h4>
+        <div id="customer-my-order-details" style="background:#f9f9f9; padding:15px; border-radius:12px; border:1px solid var(--line);"></div>
+    </div>
 </div>
 </div>
 </section>
 
-<!-- 2. RIDER DASHBOARD SECTION -->
+<!-- 2. RIDER PORTAL SECTION -->
 <section class="sec" id="tab-rider" style="display:none;">
 <div class="wrap">
 <div class="card" style="max-width:750px; margin:0 auto;">
-    <h3><i class="fa-solid fa-motorcycle" style="color:var(--gold)"></i> رائیڈر لائیو آرڈرز بورڈ</h3>
-    <p style="font-size:14px; color:var(--mute); margin-bottom:14px;">یہاں وہ تمام آرڈرز ظاہر ہوں گے جو کسٹمرز نے بک کیے ہیں۔ آپ اپنی مرضی کا آرڈر قبول کر سکتے ہیں تاکہ پتہ ہو کہ یہ کس رائڈر کے پاس جا رہا ہے۔</p>
+    <h3><i class="fa-solid fa-motorcycle" style="color:var(--gold)"></i> رائیڈر پورٹل (نیا آرڈر قبول کریں)</h3>
+    <p style="font-size:14px; color:var(--mute); margin-bottom:14px;">کام شروع کرنے کے لیے پہلے اپنا نام اور فون نمبر درج کریں۔ آپ کو صرف وہی آرڈرز یا اپنا اٹھایا ہوا آرڈر نظر آئے گا۔</p>
     
     <div class="field">
-        <label>اپنا نام اور رائیڈر فون نمبر درج کریں (تاکہ آرڈر آپ کے نامپہ رجسٹر ہو)</label>
+        <label>آپ کا نام اور رائڈر فون نمبر</label>
         <input type="text" id="active-rider-name" placeholder="محمد بلال (03009876543)" style="-webkit-user-select: text; user-select: text;">
     </div>
 
+    <div id="rider-assigned-box" style="display:none; margin-top:15px; background:#e6f4ea; border:2px solid #16a34a; padding:15px; border-radius:12px;">
+        <h4 style="color:#0D4A2F; margin-bottom:8px;"><i class="fa-solid fa-circle-check"></i> آپ کا اٹھایا ہوا آرڈر (Active Delivery)</h4>
+        <div id="rider-my-accepted-order-details"></div>
+    </div>
+
     <div id="rider-live-orders-container" style="margin-top:20px;">
-        <div class="order-card" style="background:#f9f9f9; color:#000; border:1px solid var(--line);">
-            <p><span class="badge">آرڈر #WM-101</span> <b>کرایہ: PKR 350</b></p>
-            <p><b>گاہک:</b> احمد علی (03056243881)</p>
-            <p><b>پتہ:</b> DHA فیز 2، ملتان</p>
-            <p><b>تفصیل:</b> سبزی منڈی سے تازہ سبزیاں</p>
-            <p style="color:#d97706; font-weight:700; margin-top:6px;">اسٹیٹس: انتظار میں (Pending)</p>
-            <button onclick="acceptOrder(this, 'WM-101')" class="btn" style="min-height:38px; margin-top:10px; font-size:14px; background:var(--g700);">یہ آرڈر میں اٹھا رہا ہوں (Accept)</button>
-        </div>
+        <p>لائیو آرڈرز تلاش کیے جا رہے ہیں...</p>
     </div>
 </div>
 </div>
@@ -177,14 +184,9 @@ footer{background:var(--g900);color:#fff;padding-block:25px;text-align:center;ma
     </div>
 
     <div style="margin-top:20px;">
-        <h4 style="color:#F3D88B; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;"><i class="fa-solid fa-list-check"></i> تمام لائیو آرڈرز اور رائڈر اسائنمنٹس ٹریکنگ</h4>
+        <h4 style="color:#F3D88B; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;"><i class="fa-solid fa-list-check"></i> تمام لائیو آرڈرز اور رائڈر اسائنمنٹس فائر بیس ٹریکنگ</h4>
         <div id="admin-orders-list">
-            <div class="order-card">
-                <p><span class="badge">آرڈر #WM-101</span> <b style="color:#F3D88B; margin-inline-start:10px;">کرایہ: PKR 350</b></p>
-                <p><b>گاہک:</b> احمد علی (03056243881)</p>
-                <p><b>پتہ:</b> DHA فیز 2، ملتان</p>
-                <p id="admin-status-WM-101" style="color:#f87171; font-weight:700; margin-top:6px;">اسٹیٹس: ابھی تک کسی رائڈر کو نہیں دیا گیا</p>
-            </div>
+            <p>لائیو ڈیٹا بیس سے آرڈرز لائے جا رہے ہیں...</p>
         </div>
     </div>
 </div>
@@ -199,146 +201,237 @@ footer{background:var(--g900);color:#fff;padding-block:25px;text-align:center;ma
 </footer>
 
 <script>
-let currentFare = 300;
-let adminPin = localStorage.getItem('wazir_admin_pin') || '786';
+    // Firebase Realtime Database Configuration
+    const firebaseConfig = {
+        databaseURL: "https://wazir-multani-66446-default-rtdb.firebaseio.com/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-function showTab(tabName) {
-    document.getElementById('tab-customer').style.display = 'none';
-    document.getElementById('tab-rider').style.display = 'none';
-    document.getElementById('tab-admin').style.display = 'none';
-    document.getElementById('tab-' + tabName).style.display = 'block';
-}
+    let currentFare = 300;
+    let adminPin = localStorage.getItem('wazir_admin_pin') || '786';
+    let myLastOrderKey = localStorage.getItem('wazir_my_order_key') || null;
 
-function sendCustOTP() {
-    let phone = document.getElementById('cust-phone').value;
-    let name = document.getElementById('cust-name').value;
-    if(!phone || !name) {
-        alert('براہ کرم اپنا نام اور موبائل نمبر درج کریں۔');
-        return;
+    function showTab(tabName) {
+        document.getElementById('tab-customer').style.display = 'none';
+        document.getElementById('tab-rider').style.display = 'none';
+        document.getElementById('tab-admin').style.display = 'none';
+        document.getElementById('tab-' + tabName).style.display = 'block';
     }
-    alert('او ٹی پی کوڈ 7860 بھیج دیا گیا ہے۔');
-    document.getElementById('cust-otp-box').style.display = 'block';
-}
 
-function verifyCustOTP() {
-    let code = document.getElementById('cust-otp-input').value;
-    if(code === '7860' || code === '786') {
-        let name = document.getElementById('cust-name').value;
+    function sendCustOTP() {
         let phone = document.getElementById('cust-phone').value;
-        localStorage.setItem('wazir_cust', JSON.stringify({name, phone}));
-        alert('لاگ ان کامیاب ہو گیا!');
-        document.getElementById('cust-login-card').style.display = 'none';
-        document.getElementById('cust-order-card').style.display = 'block';
-        document.getElementById('user-display-status').innerText = name + ' (آن لائن)';
-    } else {
-        alert('غلط او ٹی پی کوڈ!');
-    }
-}
-
-function custLogout() {
-    localStorage.removeItem('wazir_cust');
-    document.getElementById('cust-login-card').style.display = 'block';
-    document.getElementById('cust-order-card').style.display = 'none';
-    document.getElementById('user-display-status').innerText = 'لاگ ان کریں';
-}
-
-function adjustFare(amt) {
-    currentFare += amt;
-    if(currentFare < 150) currentFare = 150;
-    document.getElementById('fare-val').innerText = currentFare;
-}
-
-function submitCustomerOrder() {
-    let address = document.getElementById('c-address').value;
-    let items = document.getElementById('c-items').value;
-    let cust = JSON.parse(localStorage.getItem('wazir_cust'));
-
-    if(!address || !items) {
-        alert('براہ کرم پتہ اور سامان کی تفصیل درج کریں۔');
-        return;
+        let name = document.getElementById('cust-name').value;
+        if(!phone || !name) {
+            alert('براہ کرم اپنا نام اور موبائل نمبر درج کریں۔');
+            return;
+        }
+        alert('او ٹی پی کوڈ 7860 بھیج دیا گیا ہے۔');
+        document.getElementById('cust-otp-box').style.display = 'block';
     }
 
-    let orderId = 'WM-' + Math.floor(100 + Math.random() * 900);
-    
-    // Rider Board Card
-    let riderContainer = document.getElementById('rider-live-orders-container');
-    let rCard = document.createElement('div');
-    rCard.className = 'order-card';
-    rCard.style.cssText = 'background:#f9f9f9; color:#000; border:1px solid var(--line);';
-    rCard.innerHTML = `
-        <p><span class="badge">آرڈر #${orderId}</span> <b>کرایہ: PKR ${currentFare}</b></p>
-        <p><b>گاہک:</b> ${cust.name} (${cust.phone})</p>
-        <p><b>پتہ:</b> ${address}</p>
-        <p><b>تفصیل:</b> ${items}</p>
-        <p id="r-status-${orderId}" style="color:#d97706; font-weight:700; margin-top:6px;">اسٹیٹس: انتظار میں (Pending)</p>
-        <button onclick="acceptOrder(this, '${orderId}')" class="btn" style="min-height:38px; margin-top:10px; font-size:14px; background:var(--g700);">یہ آرڈر میں اٹھا رہا ہوں (Accept)</button>
-    `;
-    riderContainer.prepend(rCard);
-
-    // Admin Board Card
-    let adminContainer = document.getElementById('admin-orders-list');
-    let aCard = document.createElement('div');
-    aCard.className = 'order-card';
-    aCard.innerHTML = `
-        <p><span class="badge">آرڈر #${orderId}</span> <b style="color:#F3D88B; margin-inline-start:10px;">کرایہ: PKR ${currentFare}</b></p>
-        <p><b>گاہک:</b> ${cust.name} (${cust.phone})</p>
-        <p><b>پتہ:</b> ${address}</p>
-        <p id="admin-status-${orderId}" style="color:#f87171; font-weight:700; margin-top:6px;">اسٹیٹس: ابھی تک کسی رائڈر کو نہیں دیا گیا</p>
-    `;
-    adminContainer.prepend(aCard);
-
-    alert('آرڈر کامیابی سے لائیو جاری کر دیا گیا ہے!');
-    document.getElementById('c-address').value = '';
-    document.getElementById('c-items').value = '';
-}
-
-function acceptOrder(btn, orderId) {
-    let riderName = document.getElementById('active-rider-name').value;
-    if(!riderName) {
-        alert('براہ کرم پہلے اوپر والے خانے میں اپنا نام اور فون نمبر درج کریں تاکہ پتہ چل سکے کہ آپ کون ہیں!');
-        return;
-    }
-    
-    // Update Rider Screen
-    let statusText = document.getElementById('r-status-' + orderId);
-    statusText.style.color = '#16a34a';
-    statusText.innerText = 'اسٹیٹس: قبول کر لیا گیا (آرڈر آپ کے پاس ہے - ' + riderName + ')';
-    btn.style.display = 'none';
-
-    // Update Admin Screen
-    let adminStatusText = document.getElementById('admin-status-' + orderId);
-    if(adminStatusText) {
-        adminStatusText.style.color = '#4ade80';
-        adminStatusText.innerText = 'اسٹیٹس: رائڈر ' + riderName + ' نے یہ آرڈر اٹھا لیا ہے';
+    function verifyCustOTP() {
+        let code = document.getElementById('cust-otp-input').value;
+        if(code === '7860' || code === '786') {
+            let name = document.getElementById('cust-name').value;
+            let phone = document.getElementById('cust-phone').value;
+            localStorage.setItem('wazir_cust', JSON.stringify({name, phone}));
+            alert('لاگ ان کامیاب ہو گیا!');
+            document.getElementById('cust-login-card').style.display = 'none';
+            document.getElementById('cust-order-card').style.display = 'block';
+            document.getElementById('user-display-status').innerText = name + ' (آن لائن)';
+            checkMyActiveOrder();
+        } else {
+            alert('غلط او ٹی پی کوڈ!');
+        }
     }
 
-    alert('مبارک ہو! یہ آرڈر اب آپ (' + riderName + ') کو اسائن ہو چکا ہے۔');
-}
-
-function verifyAdminLogin() {
-    let pass = document.getElementById('admin-pass-input').value;
-    if(pass === adminPin) {
-        document.getElementById('admin-login-card').style.display = 'none';
-        document.getElementById('admin-dashboard-card').style.display = 'block';
-    } else {
-        alert('غلط پن کوڈ!');
+    function custLogout() {
+        localStorage.removeItem('wazir_cust');
+        localStorage.removeItem('wazir_my_order_key');
+        myLastOrderKey = null;
+        document.getElementById('cust-login-card').style.display = 'block';
+        document.getElementById('cust-order-card').style.display = 'none';
+        document.getElementById('customer-active-order-box').style.display = 'none';
+        document.getElementById('user-display-status').innerText = 'لاگ ان کریں';
     }
-}
 
-function adminLogout() {
-    document.getElementById('admin-login-card').style.display = 'block';
-    document.getElementById('admin-dashboard-card').style.display = 'none';
-    document.getElementById('admin-pass-input').value = '';
-}
-
-window.onload = function() {
-    let savedCust = JSON.parse(localStorage.getItem('wazir_cust'));
-    if(savedCust) {
-        document.getElementById('cust-login-card').style.display = 'none';
-        document.getElementById('cust-order-card').style.display = 'block';
-        document.getElementById('user-display-status').innerText = savedCust.name + ' (آن لائن)';
+    function adjustFare(amt) {
+        currentFare += amt;
+        if(currentFare < 150) currentFare = 150;
+        document.getElementById('fare-val').innerText = currentFare;
     }
-}
+
+    // Submit order to Firebase Realtime Database
+    function submitCustomerOrder() {
+        let address = document.getElementById('c-address').value;
+        let items = document.getElementById('c-items').value;
+        let cust = JSON.parse(localStorage.getItem('wazir_cust'));
+
+        if(!address || !items) {
+            alert('براہ کرم پتہ اور سامان کی تفصیل درج کریں۔');
+            return;
+        }
+
+        let orderData = {
+            customerName: cust.name,
+            customerPhone: cust.phone,
+            address: address,
+            items: items,
+            fare: currentFare,
+            status: "Pending",
+            assignedRider: "کوئی نہیں",
+            riderPhone: "",
+            timestamp: Date.now()
+        };
+
+        let newRef = db.ref('orders').push();
+        newRef.set(orderData).then(() => {
+            myLastOrderKey = newRef.key;
+            localStorage.setItem('wazir_my_order_key', myLastOrderKey);
+            alert('آپ کا آرڈر فائر بیس ڈیٹا بیس پر کامیابی سے لائیو بھیج دیا گیا ہے!');
+            document.getElementById('c-address').value = '';
+            document.getElementById('c-items').value = '';
+            checkMyActiveOrder();
+        }).catch((error) => {
+            alert("خرابی: " + error.message);
+        });
+    }
+
+    function checkMyActiveOrder() {
+        if(!myLastOrderKey) return;
+        db.ref('orders/' + myLastOrderKey).once('value', (snapshot) => {
+            const order = snapshot.val();
+            if(order) {
+                document.getElementById('customer-active-order-box').style.display = 'block';
+                let statusColor = order.status === "Pending" ? "#d97706" : "#16a34a";
+                let statusText = order.status === "Pending" ? "انتظار میں (رائڈر کے قبول کرنے کا انتظار...)" : "قبول کر لیا گیا ہے!";
+                
+                let riderInfo = order.status === "Accepted" ? `<p style="margin-top:8px; font-weight:700; color:#0A3D27;">آسائن شدہ رائڈر: ${order.assignedRider} (رابطہ نمبر: ${order.riderPhone})</p>` : '';
+
+                document.getElementById('customer-my-order-details').innerHTML = `
+                    <p><b>پتہ:</b> ${order.address}</p>
+                    <p><b>سامان:</b> ${order.items}</p>
+                    <p><b>کرایه:</b> PKR ${order.fare}</p>
+                    <p style="color:${statusColor}; font-weight:700; margin-top:6px;">اسٹیٹس: ${statusText}</p>
+                    ${riderInfo}
+                `;
+            }
+        });
+    }
+
+    // Rider Accepts Order in Firebase
+    function acceptOrder(orderKey) {
+        let riderInput = document.getElementById('active-rider-name').value;
+        if(!riderInput) {
+            alert('براہ کرم پہلے اوپر والے خانے میں اپنا نام اور فون نمبر درج کریں!');
+            return;
+        }
+
+        db.ref('orders/' + orderKey).update({
+            status: "Accepted",
+            assignedRider: riderInput,
+            riderPhone: riderInput
+        }).then(() => {
+            alert('مبارک ہو! یہ آرڈر اب آپ کو اسائن ہو چکا ہے۔');
+        });
+    }
+
+    // Listen to Live Orders from Firebase for Riders, Admin & Customers
+    db.ref('orders').on('value', (snapshot) => {
+        const riderContainer = document.getElementById('rider-live-orders-container');
+        const adminContainer = document.getElementById('admin-orders-list');
+        const riderAssignedBox = document.getElementById('rider-assigned-box');
+        const riderMyAcceptedDetails = document.getElementById('rider-my-accepted-order-details');
+        
+        riderContainer.innerHTML = '';
+        adminContainer.innerHTML = '';
+
+        const data = snapshot.val();
+        if(!data) {
+            riderContainer.innerHTML = '<p>اس وقت کوئی نیا آرڈر موجود نہیں۔</p>';
+            adminContainer.innerHTML = '<p>اس وقت کوئی آرڈر موجود نہیں۔</p>';
+            riderAssignedBox.style.display = 'none';
+            return;
+        }
+
+        let currentRiderName = document.getElementById('active-rider-name').value.trim();
+        let hasActiveOrderForThisRider = false;
+
+        Object.keys(data).forEach(key => {
+            const order = data[key];
+
+            // If this rider already accepted an order, show ONLY that order to them
+            if(order.status === "Accepted" && currentRiderName && order.assignedRider.includes(currentRiderName)) {
+                hasActiveOrderForThisRider = true;
+                riderAssignedBox.style.display = 'block';
+                riderMyAcceptedDetails.innerHTML = `
+                    <p><b>گاہک کا نام:</b> ${order.customerName}</p>
+                    <p><b>فون نمبر:</b> <a href="tel:${order.customerPhone}" style="color:#0969da; font-weight:700;">${order.customerPhone}</a></p>
+                    <p><b>پتہ (ڈراپ آف):</b> ${order.address}</p>
+                    <p><b>سامان / تفصیل:</b> ${order.items}</p>
+                    <p><b>طے شدہ کرایه:</b> PKR ${order.fare}</p>
+                    <p style="color:#16a34a; font-weight:700; margin-top:6px;">اسٹیٹس: آپ کے پاس یہ آرڈر فعال ہے</p>
+                `;
+            }
+
+            // Rider View: Show only Pending orders so they can accept
+            if(order.status === "Pending") {
+                riderContainer.innerHTML += `
+                    <div class="order-card" style="background:#f9f9f9; color:#000; border:1px solid var(--line);">
+                        <p><span class="badge">نیا آرڈر</span> <b>کرایہ: PKR ${order.fare}</b></p>
+                        <p><b>پتہ:</b> ${order.address}</p>
+                        <p><b>تفصیل:</b> ${order.items}</p>
+                        <button onclick="acceptOrder('${key}')" class="btn" style="min-height:38px; margin-top:10px; font-size:14px; background:var(--g700);">یہ آرڈر قبول کریں (Accept)</button>
+                    </div>
+                `;
+            }
+
+            // Admin View: Show all orders with their statuses
+            adminContainer.innerHTML += `
+                <div class="order-card">
+                    <p><span class="badge">آرڈر</span> <b style="color:#F3D88B; margin-inline-start:10px;">کرایہ: PKR ${order.fare}</b></p>
+                    <p><b>گاہک:</b> ${order.customerName} (${order.customerPhone})</p>
+                    <p><b>پتہ:</b> ${order.address}</p>
+                    <p><b>تفصیل:</b> ${order.items}</p>
+                    <p style="color:${order.status === 'Pending' ? '#f87171' : '#4ade80'}; font-weight:700; margin-top:6px;">اسٹیٹس: ${order.status === 'Pending' ? 'انتظار میں' : 'رائڈر (' + order.assignedRider + ') کے پاس ہے'}</p>
+                </div>
+            `;
+        });
+
+        if(!hasActiveOrderForThisRider) {
+            riderAssignedBox.style.display = 'none';
+        }
+
+        // Update Customer view if active order exists
+        checkMyActiveOrder();
+    });
+
+    function verifyAdminLogin() {
+        let pass = document.getElementById('admin-pass-input').value;
+        if(pass === adminPin) {
+            document.getElementById('admin-login-card').style.display = 'none';
+            document.getElementById('admin-dashboard-card').style.display = 'block';
+        } else {
+            alert('غلط پن کوڈ!');
+        }
+    }
+
+    function adminLogout() {
+        document.getElementById('admin-login-card').style.display = 'block';
+        document.getElementById('admin-dashboard-card').style.display = 'none';
+        document.getElementById('admin-pass-input').value = '';
+    }
+
+    window.onload = function() {
+        let savedCust = JSON.parse(localStorage.getItem('wazir_cust'));
+        if(savedCust) {
+            document.getElementById('cust-login-card').style.display = 'none';
+            document.getElementById('cust-order-card').style.display = 'block';
+            document.getElementById('user-display-status').innerText = savedCust.name + ' (آن لائن)';
+            checkMyActiveOrder();
+        }
+    }
 </script>
 
 </body>
