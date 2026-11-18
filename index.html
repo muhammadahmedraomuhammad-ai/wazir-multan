@@ -1,124 +1,344 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ur" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>وزیرِ ملتانی - ان ڈرائیو طرز لائیو ڈیلیوری ایپ</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <style>
-        :root { --g900: #0A3D27; --g800: #0D4A2F; --g700: #0F5C39; --accent: #10B981; --bg: #F4F7F6; --text: #1F2937; }
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { margin: 0; background: var(--bg); color: var(--text); padding: 20px; }
-        .app-container { max-width: 480px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; padding: 20px; }
-        h1 { color: var(--g900); font-size: 24px; text-align: center; margin-bottom: 5px; }
-        p.subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; color: var(--g800); }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; }
-        button { width: 100%; background: var(--g700); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        button:hover { background: var(--g800); }
-        .order-card { background: #f9f9f9; border-right: 4px solid var(--accent); padding: 12px; margin-top: 10px; border-radius: 6px; }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>وزیرِ ملتانی - آزاد رائیڈر اور ان ڈرائیو طرز کا لائیو ڈیلیوری سسٹم</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;700&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--g900:#0A3D27;--g800:#0D4A2F;--g700:#0F5A3A;--g500:#1E8A55;--g100:#E4F2EA;--g50:#F2F8F4;--gold:#C9A24B;--gold-d:#8A6A1F;--bg:#F6F9F6;--card:#FFFFFF;--ink:#12201A;--mute:#4B5B52;--line:#D3E3D8;--r:16px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Naskh Arabic','Segoe UI',Tahoma,sans-serif;font-size:18px;line-height:1.95}
+a{color:var(--g700);text-decoration:none}
+button,input,select,textarea{font-family:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+h1,h2{font-family:'Noto Nastaliq Urdu',serif;font-weight:700;margin:0;line-height:2.1;color:var(--g800);text-wrap:balance}
+h3{margin:0;font-size:20px;line-height:1.7;color:var(--g800)}
+p{margin:0}
+.sec{padding-block:40px}
+
+.topbar{background:var(--g900);color:#fff;font-size:15px}
+.topbar .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:2px 16px;min-height:44px}
+.topbar a{color:#F3D88B}
+.topbar .grp{display:flex;align-items:center;gap:16px}
+.topbar .tel{color:#fff;direction:ltr;unicode-bidi:embed}
+
+.hdr{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.hdr .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 24px;padding-block:8px}
+.logo{display:inline-flex;align-items:center;gap:10px;font-family:'Noto Nastaliq Urdu',serif;font-weight:700;font-size:28px;color:var(--g700)}
+
+.hero{background:linear-gradient(135deg,#F2F8F4 0%,#DDEEE3 100%);padding-block:35px}
+.hero h1{font-size:clamp(28px,4.5vw,42px);line-height:1.7;color:var(--g800)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;border:2px solid var(--g700);background:var(--g700);color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.btn:hover{background:var(--g800)}
+.btn.ghost{background:#fff;color:var(--g700)}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 4px 12px rgba(0,0,0,.03);margin-bottom:24px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+label{font-weight:600;font-size:16px;color:var(--g800)}
+input[type=text],input[type=password],textarea,select{width:100%;min-height:48px;padding:8px 14px;border:1px solid #8AA394;border-radius:12px;background:#fff;color:var(--ink);font-size:16px}
+
+.bidding-box{background:#12201A;color:#fff;border-radius:20px;padding:20px;border:2px solid var(--gold);margin-top:16px}
+.fare-control{display:flex;align-items:center;justify-content:center;gap:20px;margin:14px 0}
+.fare-btn{width:46px;height:46px;border-radius:50%;background:var(--gold);color:#000;font-size:22px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.fare-display{font-size:30px;font-weight:700;color:var(--gold)}
+
+.admin-dash{background:linear-gradient(135deg, #0A3D27 0%, #051F14 100%);color:#fff;border-radius:20px;padding:24px;border:1px solid var(--gold)}
+.order-card{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:16px;margin-top:14px}
+.badge{background:var(--gold);color:#000;font-size:12px;font-weight:700;padding:2px 10px;border-radius:99px}
+footer{background:var(--g900);color:#fff;padding-block:25px;text-align:center;margin-top:40px}
+.nav-tabs{display:flex;gap:8px;flex-wrap:wrap;}
+</style>
 </head>
 <body>
 
-<div class="app-container">
-    <h1>وزیرِ ملتانی</h1>
-    <p class="subtitle">ملتان کا اپنا لائیو ڈیلیوری سسٹم</p>
+<div class="topbar"><div class="wrap">
+<div class="grp"><span style="display:inline-flex;align-items:center;gap:6px"><i class="fa-solid fa-location-dot" style="color:var(--gold)"></i>ملتان (سبزی و غلہ منڈی زون)</span>
+<a class="tel" href="tel:+923056243881"><i class="fa-solid fa-phone" style="margin-inline-end:6px"></i>0305 6243881</a></div>
+<div class="grp"><span id="user-display-status" style="color:#F3D88B;">لاگ ان کریں</span></div>
+</div></div>
 
-    <div id="booking-section">
-        <div class="form-group">
-            <label>آپ کا نام:</label>
-            <input type="text" id="custName" placeholder="نام درج کریں">
-        </div>
-        <div class="form-group">
-            <label>فون نمبر:</label>
-            <input type="tel" id="custPhone" placeholder="03XXXXXXXXX">
-        </div>
-        <div class="form-group">
-            <label>پک اپ کی جگہ (مقام):</label>
-            <input type="text" id="pickupLoc" placeholder="مثلاً: گھنٹہ گھر، ملتان">
-        </div>
-        <div class="form-group">
-            <label>ڈراپ آف (منزل):</label>
-            <input type="text" id="dropLoc" placeholder="مثلاً: گلشن بازار، ملتان">
-        </div>
-        <div class="form-group">
-            <label>پیشکش کرایہ (روپے):</label>
-            <input type="number" id="bidPrice" placeholder="مناسب کرایہ درج کریں">
-        </div>
-        <button onclick="placeOrder()">آرڈر بک کریں</button>
+<header class="hdr"><div class="wrap">
+<a class="logo" href="#top"><i class="fa-solid fa-store" style="color:var(--gold)"></i>وزیرِ ملتانی</a>
+<div class="nav-tabs">
+    <button onclick="showTab('customer')" class="btn" style="min-height:38px; padding:0 14px; font-size:14px;">کسٹمر</button>
+    <button onclick="showTab('rider')" class="btn ghost" style="min-height:38px; padding:0 14px; font-size:14px;">رائیڈر ڈیش بورڈ</button>
+    <button onclick="showTab('admin')" class="btn ghost" style="min-height:38px; padding:0 14px; font-size:14px; background:#C9A24B; color:#000; border-color:#C9A24B;"><i class="fa-solid fa-lock" style="margin-inline-end:4px"></i>ایڈمن پینل</button>
+</div>
+</div></header>
+
+<section class="hero"><div class="wrap">
+<div style="max-width:700px;">
+<h1>ملتان کے بازار، آپ کی دہلیز پر</h1>
+<p>لائیو ڈلیوری اور رائیڈر اسائنمنٹ سسٹم: کون سا آرڈر کس رائڈر کو جا رہا ہے اس کی مکمل ٹریکنگ۔</p>
+</div>
+</div></section>
+
+<!-- 1. CUSTOMER SECTION -->
+<section class="sec" id="tab-customer">
+<div class="wrap">
+<div id="cust-login-card" class="card" style="max-width:550px; margin:0 auto;">
+    <h3><i class="fa-solid fa-mobile-screen-button" style="color:var(--gold)"></i> کسٹمر موبائل لاگ ان (OTP)</h3>
+    <div class="field">
+        <label>موبائل نمبر (03xxxxxxxxx)</label>
+        <input type="text" id="cust-phone" placeholder="03056243881" style="-webkit-user-select: text; user-select: text;">
     </div>
-
-    <div style="margin-top: 25px;">
-        <h3>لائیو آرڈرز (رائڈرز کے لیے)</h3>
-        <div id="ordersList">آرڈرز لوڈ ہو رہے ہیں...</div>
+    <div class="field">
+        <label>آپ کا نام</label>
+        <input type="text" id="cust-name" placeholder="محمد علی" style="-webkit-user-select: text; user-select: text;">
+    </div>
+    <button onclick="sendCustOTP()" class="btn" style="width:100%;">او ٹی پی کوڈ حاصل کریں</button>
+    
+    <div id="cust-otp-box" style="display:none; margin-top:16px; border-top:1px dashed var(--line); padding-top:14px;">
+        <div class="field">
+            <label>او ٹی پی کوڈ درج کریں (مثلاً 7860)</label>
+            <input type="text" id="cust-otp-input" placeholder="7860" style="-webkit-user-select: text; user-select: text;">
+        </div>
+        <button onclick="verifyCustOTP()" class="btn" style="width:100%; background:var(--g500);">لاگ ان مکمل کریں</button>
     </div>
 </div>
 
+<div id="cust-order-card" class="card" style="max-width:700px; margin:0 auto; display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:14px;">
+        <h3 style="color:var(--g800);"><i class="fa-solid fa-cart-shopping" style="color:var(--gold)"></i> نیا آرڈر بک کریں</h3>
+        <button onclick="custLogout()" class="btn ghost" style="min-height:34px; padding:0 10px; font-size:13px;">لاگ آؤٹ</button>
+    </div>
+    <div class="field">
+        <label>ڈلیوری کا مکمل پتہ (ملتان زون)</label>
+        <input type="text" id="c-address" placeholder="مثلاً DHA فیز 2 / غلہ منڈی..." style="-webkit-user-select: text; user-select: text;">
+    </div>
+    <div class="field">
+        <label>منڈی یا دکان سے سامان کی تفصیل</label>
+        <textarea id="c-items" placeholder="مثلاً سبزی منڈی سے تازہ سبزیاں..." style="-webkit-user-select: text; user-select: text;"></textarea>
+    </div>
+
+    <div class="bidding-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span>آن لائن رائیڈرز دستیاب ہیں</span>
+            <span class="badge">ان ڈرائیو فیر آفر</span>
+        </div>
+        <div class="fare-control">
+            <button class="fare-btn" onclick="adjustFare(-50)">-</button>
+            <div class="fare-display">PKR <span id="fare-val">300</span></div>
+            <button class="fare-btn" onclick="adjustFare(50)">+</button>
+        </div>
+    </div>
+
+    <button onclick="submitCustomerOrder()" class="btn" style="width:100%; margin-top:20px; background:var(--gold); color:#000; border-color:#C9A24B;">آرڈر لائیو بھیجیں</button>
+</div>
+</div>
+</section>
+
+<!-- 2. RIDER DASHBOARD SECTION -->
+<section class="sec" id="tab-rider" style="display:none;">
+<div class="wrap">
+<div class="card" style="max-width:750px; margin:0 auto;">
+    <h3><i class="fa-solid fa-motorcycle" style="color:var(--gold)"></i> رائیڈر لائیو آرڈرز بورڈ</h3>
+    <p style="font-size:14px; color:var(--mute); margin-bottom:14px;">یہاں وہ تمام آرڈرز ظاہر ہوں گے جو کسٹمرز نے بک کیے ہیں۔ آپ اپنی مرضی کا آرڈر قبول کر سکتے ہیں تاکہ پتہ ہو کہ یہ کس رائڈر کے پاس جا رہا ہے۔</p>
+    
+    <div class="field">
+        <label>اپنا نام اور رائیڈر فون نمبر درج کریں (تاکہ آرڈر آپ کے نامپہ رجسٹر ہو)</label>
+        <input type="text" id="active-rider-name" placeholder="محمد بلال (03009876543)" style="-webkit-user-select: text; user-select: text;">
+    </div>
+
+    <div id="rider-live-orders-container" style="margin-top:20px;">
+        <div class="order-card" style="background:#f9f9f9; color:#000; border:1px solid var(--line);">
+            <p><span class="badge">آرڈر #WM-101</span> <b>کرایہ: PKR 350</b></p>
+            <p><b>گاہک:</b> احمد علی (03056243881)</p>
+            <p><b>پتہ:</b> DHA فیز 2، ملتان</p>
+            <p><b>تفصیل:</b> سبزی منڈی سے تازہ سبزیاں</p>
+            <p style="color:#d97706; font-weight:700; margin-top:6px;">اسٹیٹس: انتظار میں (Pending)</p>
+            <button onclick="acceptOrder(this, 'WM-101')" class="btn" style="min-height:38px; margin-top:10px; font-size:14px; background:var(--g700);">یہ آرڈر میں اٹھا رہا ہوں (Accept)</button>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<!-- 3. ADMIN PANEL SECTION -->
+<section class="sec" id="tab-admin" style="display:none;">
+<div class="wrap">
+<div id="admin-login-card" class="card" style="max-width:450px; margin:0 auto;">
+    <h3><i class="fa-solid fa-shield-halved" style="color:var(--gold)"></i> ایڈمن سکیورٹی لاگ ان</h3>
+    <p style="font-size:14px; color:var(--mute); margin-bottom:14px;">پن کوڈ درج کریں (پہلے سے طے شدہ: 786)</p>
+    <div class="field">
+        <label>ایڈمن پن کوڈ</label>
+        <input type="password" id="admin-pass-input" placeholder="پن کوڈ درج کریں" style="-webkit-user-select: text; user-select: text;">
+    </div>
+    <button onclick="verifyAdminLogin()" class="btn" style="width:100%; background:var(--gold); color:#000; border-color:#C9A24B;">لاگ ان کریں</button>
+</div>
+
+<div id="admin-dashboard-card" class="admin-dash" style="display:none; max-width:900px; margin:0 auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:12px;">
+        <h3 style="color:#F3D88B;"><i class="fa-solid fa-gauge-high"></i> وزیرِ ملتانی - ایڈمن کنٹرول پینل</h3>
+        <button onclick="adminLogout()" class="btn ghost" style="min-height:36px; padding:0 12px; font-size:13px; color:#fff;">لاگ آؤت</button>
+    </div>
+
+    <div style="margin-top:20px;">
+        <h4 style="color:#F3D88B; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;"><i class="fa-solid fa-list-check"></i> تمام لائیو آرڈرز اور رائڈر اسائنمنٹس ٹریکنگ</h4>
+        <div id="admin-orders-list">
+            <div class="order-card">
+                <p><span class="badge">آرڈر #WM-101</span> <b style="color:#F3D88B; margin-inline-start:10px;">کرایہ: PKR 350</b></p>
+                <p><b>گاہک:</b> احمد علی (03056243881)</p>
+                <p><b>پتہ:</b> DHA فیز 2، ملتان</p>
+                <p id="admin-status-WM-101" style="color:#f87171; font-weight:700; margin-top:6px;">اسٹیٹس: ابھی تک کسی رائڈر کو نہیں دیا گیا</p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="wrap">
+<p><b>وزیرِ ملتانی</b> — ملتان کا اپنا آزاد رائیڈر اور ڈلیوری نیٹ ورک (Admin: ahmaraod53@gmail.com)</p>
+<small>© 2026 جميع الحقوق محفوظة</small>
+</div>
+</footer>
+
 <script>
-    // فائر بیس کنفیگریشن (wazir-multani-66446)
-    const firebaseConfig = {
-        databaseURL: "https://wazir-multani-66446-default-rtdb.firebaseio.com/"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+let currentFare = 300;
+let adminPin = localStorage.getItem('wazir_admin_pin') || '786';
 
-    function placeOrder() {
-        const name = document.getElementById('custName').value;
-        const phone = document.getElementById('custPhone').value;
-        const pickup = document.getElementById('pickupLoc').value;
-        const drop = document.getElementById('dropLoc').value;
-        const price = document.getElementById('bidPrice').value;
+function showTab(tabName) {
+    document.getElementById('tab-customer').style.display = 'none';
+    document.getElementById('tab-rider').style.display = 'none';
+    document.getElementById('tab-admin').style.display = 'none';
+    document.getElementById('tab-' + tabName).style.display = 'block';
+}
 
-        if(!name || !phone || !pickup || !drop || !price) {
-            alert("براہ کرم تمام خانے پر کریں۔");
-            return;
-        }
+function sendCustOTP() {
+    let phone = document.getElementById('cust-phone').value;
+    let name = document.getElementById('cust-name').value;
+    if(!phone || !name) {
+        alert('براہ کرم اپنا نام اور موبائل نمبر درج کریں۔');
+        return;
+    }
+    alert('او ٹی پی کوڈ 7860 بھیج دیا گیا ہے۔');
+    document.getElementById('cust-otp-box').style.display = 'block';
+}
 
-        const orderData = {
-            name: name,
-            phone: phone,
-            pickup: pickup,
-            drop: drop,
-            price: price,
-            status: "Pending",
-            timestamp: Date.now()
-        };
+function verifyCustOTP() {
+    let code = document.getElementById('cust-otp-input').value;
+    if(code === '7860' || code === '786') {
+        let name = document.getElementById('cust-name').value;
+        let phone = document.getElementById('cust-phone').value;
+        localStorage.setItem('wazir_cust', JSON.stringify({name, phone}));
+        alert('لاگ ان کامیاب ہو گیا!');
+        document.getElementById('cust-login-card').style.display = 'none';
+        document.getElementById('cust-order-card').style.display = 'block';
+        document.getElementById('user-display-status').innerText = name + ' (آن لائن)';
+    } else {
+        alert('غلط او ٹی پی کوڈ!');
+    }
+}
 
-        db.ref('orders').push(orderData).then(() => {
-            alert("آرڈر کامیابی سے سبمٹ ہو گیا ہے! رائڈر کو الرٹ بھیج دیا گیا ہے۔");
-            document.getElementById('custName').value = '';
-            document.getElementById('custPhone').value = '';
-            document.getElementById('pickupLoc').value = '';
-            document.getElementById('dropLoc').value = '';
-            document.getElementById('bidPrice').value = '';
-        }).catch((error) => {
-            alert("خرابی: " + error.message);
-        });
+function custLogout() {
+    localStorage.removeItem('wazir_cust');
+    document.getElementById('cust-login-card').style.display = 'block';
+    document.getElementById('cust-order-card').style.display = 'none';
+    document.getElementById('user-display-status').innerText = 'لاگ ان کریں';
+}
+
+function adjustFare(amt) {
+    currentFare += amt;
+    if(currentFare < 150) currentFare = 150;
+    document.getElementById('fare-val').innerText = currentFare;
+}
+
+function submitCustomerOrder() {
+    let address = document.getElementById('c-address').value;
+    let items = document.getElementById('c-items').value;
+    let cust = JSON.parse(localStorage.getItem('wazir_cust'));
+
+    if(!address || !items) {
+        alert('براہ کرم پتہ اور سامان کی تفصیل درج کریں۔');
+        return;
     }
 
-    // لائیو آرڈرز شو کرنا
-    db.ref('orders').on('value', (snapshot) => {
-        const listDiv = document.getElementById('ordersList');
-        listDiv.innerHTML = '';
-        const data = snapshot.val();
-        if(!data) {
-            listDiv.innerHTML = '<p>اس وقت کوئی نیا آرڈر موجود نہیں۔</p>';
-            return;
-        }
-        Object.keys(data).forEach(key => {
-            const order = data[key];
-            listDiv.innerHTML += `
-                <div class="order-card">
-                    <strong>کسٹمر:</strong> ${order.name} (${order.phone})<br>
-                    <strong>مقام:</strong> ${order.pickup} ➔ ${order.drop}<br>
-                    <strong>کرایہ:</strong> PKR ${order.price}
-                </div>
-            `;
-        });
-    });
+    let orderId = 'WM-' + Math.floor(100 + Math.random() * 900);
+    
+    // Rider Board Card
+    let riderContainer = document.getElementById('rider-live-orders-container');
+    let rCard = document.createElement('div');
+    rCard.className = 'order-card';
+    rCard.style.cssText = 'background:#f9f9f9; color:#000; border:1px solid var(--line);';
+    rCard.innerHTML = `
+        <p><span class="badge">آرڈر #${orderId}</span> <b>کرایہ: PKR ${currentFare}</b></p>
+        <p><b>گاہک:</b> ${cust.name} (${cust.phone})</p>
+        <p><b>پتہ:</b> ${address}</p>
+        <p><b>تفصیل:</b> ${items}</p>
+        <p id="r-status-${orderId}" style="color:#d97706; font-weight:700; margin-top:6px;">اسٹیٹس: انتظار میں (Pending)</p>
+        <button onclick="acceptOrder(this, '${orderId}')" class="btn" style="min-height:38px; margin-top:10px; font-size:14px; background:var(--g700);">یہ آرڈر میں اٹھا رہا ہوں (Accept)</button>
+    `;
+    riderContainer.prepend(rCard);
+
+    // Admin Board Card
+    let adminContainer = document.getElementById('admin-orders-list');
+    let aCard = document.createElement('div');
+    aCard.className = 'order-card';
+    aCard.innerHTML = `
+        <p><span class="badge">آرڈر #${orderId}</span> <b style="color:#F3D88B; margin-inline-start:10px;">کرایہ: PKR ${currentFare}</b></p>
+        <p><b>گاہک:</b> ${cust.name} (${cust.phone})</p>
+        <p><b>پتہ:</b> ${address}</p>
+        <p id="admin-status-${orderId}" style="color:#f87171; font-weight:700; margin-top:6px;">اسٹیٹس: ابھی تک کسی رائڈر کو نہیں دیا گیا</p>
+    `;
+    adminContainer.prepend(aCard);
+
+    alert('آرڈر کامیابی سے لائیو جاری کر دیا گیا ہے!');
+    document.getElementById('c-address').value = '';
+    document.getElementById('c-items').value = '';
+}
+
+function acceptOrder(btn, orderId) {
+    let riderName = document.getElementById('active-rider-name').value;
+    if(!riderName) {
+        alert('براہ کرم پہلے اوپر والے خانے میں اپنا نام اور فون نمبر درج کریں تاکہ پتہ چل سکے کہ آپ کون ہیں!');
+        return;
+    }
+    
+    // Update Rider Screen
+    let statusText = document.getElementById('r-status-' + orderId);
+    statusText.style.color = '#16a34a';
+    statusText.innerText = 'اسٹیٹس: قبول کر لیا گیا (آرڈر آپ کے پاس ہے - ' + riderName + ')';
+    btn.style.display = 'none';
+
+    // Update Admin Screen
+    let adminStatusText = document.getElementById('admin-status-' + orderId);
+    if(adminStatusText) {
+        adminStatusText.style.color = '#4ade80';
+        adminStatusText.innerText = 'اسٹیٹس: رائڈر ' + riderName + ' نے یہ آرڈر اٹھا لیا ہے';
+    }
+
+    alert('مبارک ہو! یہ آرڈر اب آپ (' + riderName + ') کو اسائن ہو چکا ہے۔');
+}
+
+function verifyAdminLogin() {
+    let pass = document.getElementById('admin-pass-input').value;
+    if(pass === adminPin) {
+        document.getElementById('admin-login-card').style.display = 'none';
+        document.getElementById('admin-dashboard-card').style.display = 'block';
+    } else {
+        alert('غلط پن کوڈ!');
+    }
+}
+
+function adminLogout() {
+    document.getElementById('admin-login-card').style.display = 'block';
+    document.getElementById('admin-dashboard-card').style.display = 'none';
+    document.getElementById('admin-pass-input').value = '';
+}
+
+window.onload = function() {
+    let savedCust = JSON.parse(localStorage.getItem('wazir_cust'));
+    if(savedCust) {
+        document.getElementById('cust-login-card').style.display = 'none';
+        document.getElementById('cust-order-card').style.display = 'block';
+        document.getElementById('user-display-status').innerText = savedCust.name + ' (آن لائن)';
+    }
+}
 </script>
 
 </body>
